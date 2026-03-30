@@ -21,9 +21,9 @@ Este projeto consiste no desenvolvimento de um banco de dados completo para um a
 
 O projeto está dividido em três fases principais de modelagem:
 
-1.  **modelo conceitual**: representação das entidades e relacionamentos através do brmodelo.
-2.  **modelo lógico**: tradução do der para a estrutura de tabelas, chaves primárias e estrangeiras.
-3.  **modelo físico (DDL/DML)**: scripts sql para criação da estrutura e inserção de dados de teste.
+1.  **Modelo Conceitual**: representação das entidades e relacionamentos através do brmodelo.
+2.  **Modelo Lógico**: tradução do der para a estrutura de tabelas, chaves primárias e estrangeiras.
+3.  **Modelo Físico (DDL/DML)**: scripts sql para criação da estrutura e inserção de dados de teste.
 
 ## 🚀 Como executar o projeto
 
