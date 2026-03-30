@@ -40,6 +40,7 @@ O projeto está dividido em três fases principais de modelagem:
 * **faturamento**: integração de custos de atendimentos, exames e internações.
 
 ---
+===
 
 ### 📄 LICENÇA
 
