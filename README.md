@@ -17,7 +17,7 @@ Este projeto consiste no desenvolvimento de um banco de dados completo para um a
 * **[dBeaver](https://dbeaver.com)**: Ferramenta de gerenciamento e execução de scripts sql.
 * **[Postgresql](https://www.postgresql.org)**: Sistema de gerenciamento de banco de dados relacional (sgbd).
 
-## 🗂️ estrutura do projeto
+## 🗂️ ESTRUTURA DO PROJETO
 
 O projeto está dividido em três fases principais de modelagem:
 
