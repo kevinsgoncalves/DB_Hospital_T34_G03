@@ -1,4 +1,4 @@
-/*DDL - CRIANDO TABELAS - FEITA PARCIALMENTE NO DISCORD */
+/*DDL - CRIANDO TABELAS*/
 
 /* TODOS OS ENUMS */
 create type turno_enfermeira as enum ('manhã', 'tarde', 'noite');
@@ -24,6 +24,8 @@ create table plano_saude (
     telefone varchar(20),
     cobertura cobertura_plano
 );
+
+
 
 create table credenciamento (
     data_credenciamento date not null,
@@ -132,6 +134,13 @@ create table prescricao (
     dosagem varchar(100), 
     id_atendimento int references atendimento(id_atendimento),
     id_medicamento int references medicamento(id_medicamento)
+);
+
+
+CREATE TABLE paciente_plano (
+    cpf_paciente varchar(14) REFERENCES paciente(cpf),
+    nome_plano varchar(50) REFERENCES plano_saude(nome_plano),
+    PRIMARY KEY (cpf_paciente, nome_plano)
 );
 
 /* FINANCEIRO INTERNO */

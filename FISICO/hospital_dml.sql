@@ -1,4 +1,4 @@
-/* DML - POVOAMENTO DAS TABELAS COM USO DO GEMINI NESTA PARTE */
+/* DML - POVOAMENTO DAS TABELAS GERADOS POR IA */
 
 -- HOSPITAIS
 insert into hospital (cnpj, nome) values 
@@ -25,6 +25,19 @@ insert into plano_saude (nome_plano, telefone, cobertura) values
 ('intermédica', '(11) 7777-6666', 'regional'),
 ('allianz', '(11) 8888-9999', 'nacional'),
 ('care plus', '(11) 4444-1111', 'nacional');
+
+
+INSERT INTO paciente_plano (cpf_paciente, nome_plano) VALUES
+('123.456.789-01', 'unimed'),
+('234.567.890-12', 'bradesco saude'),
+('345.678.901-23', 'sulamerica'),
+('456.789.012-34', 'amil'),
+('567.890.123-45', 'hapvida'),
+('678.901.234-56', 'porto seguro'),
+('789.012.345-67', 'unimed'),
+('890.123.456-78', 'intermédica'),
+('901.234.567-89', 'unimed'),
+('012.345.678-90', 'care plus');
 
 -- CREDENCIAMENTO
 insert into credenciamento (cnpj_hospital, nome_plano, data_credenciamento) values 
@@ -189,6 +202,18 @@ insert into prescricao (data_prescricao, dosagem, id_atendimento, id_medicamento
 ('2026-03-01', 'gotas para dor', 1, 2),
 ('2026-03-05', 'pomada no local', 2, 3);
 
+INSERT INTO paciente_plano (cpf_paciente, nome_plano) VALUES
+('123.456.789-01', 'unimed'),
+('234.567.890-12', 'bradesco saude'),
+('345.678.901-23', 'sulamerica'),
+('456.789.012-34', 'amil'),
+('567.890.123-45', 'hapvida'),
+('678.901.234-56', 'porto seguro'),
+('789.012.345-67', 'unimed'),
+('890.123.456-78', 'intermédica'),
+('901.234.567-89', 'unimed'),
+('012.345.678-90', 'care plus');
+
 -- FATURAMENTO
 insert into faturamento (valor, status, forma_pagamento, data_emissao, data_vencimento, id_atendimento, id_exame, id_internacao) values 
 (150.00, 'pago', 'cartão de crédito', '2026-03-01', '2026-03-31', 1, null, null),
@@ -211,4 +236,4 @@ insert into pesquisa (data_resposta, nota_geral, comentario, recomendaria, tempo
 ('2026-03-22 15:00:00', 2, 'espera excessiva na recepção', false, 1, 7),
 ('2026-03-25 09:30:00', 4, 'instalações muito limpas', true, 4, 8),
 ('2026-03-27 19:00:00', 5, 'salvou minha vida no pronto socorro', true, 5, 9),
-('2026-03-28 11:30:00', 4, 'médico muito pontual', true, 5, 10);
+('2026-03-28 11:30:00', 4, 'médico muito pontual', true, 5, 10); 

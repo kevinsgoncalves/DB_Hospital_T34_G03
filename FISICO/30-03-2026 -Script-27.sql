@@ -373,6 +373,18 @@ insert into prescricao (data_prescricao, dosagem, id_atendimento, id_medicamento
 ('2026-03-01', 'gotas para dor', 1, 2),
 ('2026-03-05', 'pomada no local', 2, 3);
 
+INSERT INTO paciente_plano (cpf_paciente, nome_plano) VALUES
+('123.456.789-01', 'unimed'),
+('234.567.890-12', 'bradesco saude'),
+('345.678.901-23', 'sulamerica'),
+('456.789.012-34', 'amil'),
+('567.890.123-45', 'hapvida'),
+('678.901.234-56', 'porto seguro'),
+('789.012.345-67', 'unimed'),
+('890.123.456-78', 'intermédica'),
+('901.234.567-89', 'unimed'),
+('012.345.678-90', 'care plus');
+
 -- FATURAMENTO
 insert into faturamento (valor, status, forma_pagamento, data_emissao, data_vencimento, id_atendimento, id_exame, id_internacao) values 
 (150.00, 'pago', 'cartão de crédito', '2026-03-01', '2026-03-31', 1, null, null),
