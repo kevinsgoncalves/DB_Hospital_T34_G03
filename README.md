@@ -23,7 +23,7 @@ O projeto está dividido em três fases principais de modelagem:
 
 1.  **modelo conceitual**: representação das entidades e relacionamentos através do brmodelo.
 2.  **modelo lógico**: tradução do der para a estrutura de tabelas, chaves primárias e estrangeiras.
-3.  **modelo físico (ddl/dml)**: scripts sql para criação da estrutura e inserção de dados de teste.
+3.  **modelo físico (DDL/DML)**: scripts sql para criação da estrutura e inserção de dados de teste.
 
 ## 🚀 Como executar o projeto
 
@@ -32,7 +32,7 @@ O projeto está dividido em três fases principais de modelagem:
 3.  abra o **dBeaver** e conecte-se ao banco criado.
 4.  execute primeiro o script contido em `MODELO FISICO` para gerar as tabelas.
 
-## 📋 requisitos implementados
+## 📋 Requisitos Implementados
 
 * **auto-relacionamento**: hierarquia de enfermeiras (chefe/subordinada).
 * **relacionamento n:n**: prescrições de medicamentos e credenciamento de planos.
