@@ -7,7 +7,7 @@ Este projeto consiste no desenvolvimento de um banco de dados completo para um a
 * [Kevin Gonçalves](https://github.com/kevinsgoncalves)
 * [Pedro Reis](https://github.com/PHDReis)
 * [Simone Bromer](https://github.com/SimoneBromer)
-* [Gabriel Mendonça](link-do-github)
+* [Gabriel Mendonça](https://github.com/AscendedGabriel)
 * [Leonan Nogueira](https://github.com/LeonamNgr)
 * [Danielle Carvalho](https://github.com/DanielleCarvalho-26)
 
