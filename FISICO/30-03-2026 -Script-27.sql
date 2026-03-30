@@ -25,6 +25,8 @@ create table plano_saude (
     cobertura cobertura_plano
 );
 
+
+
 create table credenciamento (
     data_credenciamento date not null,
     cnpj_hospital varchar(18) references hospital(cnpj), 
@@ -134,6 +136,13 @@ create table prescricao (
     id_medicamento int references medicamento(id_medicamento)
 );
 
+
+CREATE TABLE paciente_plano (
+    cpf_paciente varchar(14) REFERENCES paciente(cpf),
+    nome_plano varchar(50) REFERENCES plano_saude(nome_plano),
+    PRIMARY KEY (cpf_paciente, nome_plano)
+);
+
 /* FINANCEIRO INTERNO */
 create table faturamento (
     id_fatura serial primary key, 
@@ -187,6 +196,19 @@ insert into plano_saude (nome_plano, telefone, cobertura) values
 ('intermédica', '(11) 7777-6666', 'regional'),
 ('allianz', '(11) 8888-9999', 'nacional'),
 ('care plus', '(11) 4444-1111', 'nacional');
+
+
+INSERT INTO paciente_plano (cpf_paciente, nome_plano) VALUES
+('123.456.789-01', 'unimed'),
+('234.567.890-12', 'bradesco saude'),
+('345.678.901-23', 'sulamerica'),
+('456.789.012-34', 'amil'),
+('567.890.123-45', 'hapvida'),
+('678.901.234-56', 'porto seguro'),
+('789.012.345-67', 'unimed'),
+('890.123.456-78', 'intermédica'),
+('901.234.567-89', 'unimed'),
+('012.345.678-90', 'care plus');
 
 -- CREDENCIAMENTO
 insert into credenciamento (cnpj_hospital, nome_plano, data_credenciamento) values 
@@ -373,7 +395,186 @@ insert into pesquisa (data_resposta, nota_geral, comentario, recomendaria, tempo
 ('2026-03-22 15:00:00', 2, 'espera excessiva na recepção', false, 1, 7),
 ('2026-03-25 09:30:00', 4, 'instalações muito limpas', true, 4, 8),
 ('2026-03-27 19:00:00', 5, 'salvou minha vida no pronto socorro', true, 5, 9),
-('2026-03-28 11:30:00', 4, 'médico muito pontual', true, 5, 10);
+('2026-03-28 11:30:00', 4, 'médico muito pontual', true, 5, 10); 
+
+
+--    ********    ATIVIDADES   *******
+--Médicos e Especialidades
+--Quais são os nomes e telefones de todos os médicos da especialidade “Cardiologia”?
+
+select nome,telefone from medico
+where espec_medico = 'cardiologista';
+
+--Pacientes e Planos de Saúde
+--Liste o nome e o CPF de todos os pacientes que possuem o plano de saúde “Unimed”.
+
+SELECT p.nome, p.cpf
+FROM paciente p
+inner JOIN paciente_plano pp 
+     ON p.cpf = pp.cpf_paciente
+WHERE pp.nome_plano = 'unimed';
+
+
+--Exames Pendentes
+--Quais exames ainda não têm resultado (data_resultado IS NULL) e foram solicitados no
+--mês atual?
+
+SELECT * FROM exame
+WHERE data_resultado IS NULL
+AND date_trunc('month', data_pedido) = date_trunc('month', CURRENT_DATE);
+
+--Quantidade de exames por laboratório.
+
+SELECT l.nome, COUNT(e.id_exame) AS quantidade_exames
+FROM laboratorio l
+JOIN exame e
+ON l.id_lab = e.id_lab
+GROUP BY l.nome;
+
+--Internações Ativas
+--Liste o nome do paciente, o número do leito e a data de entrada para todas as
+--internações ativas (data_saida IS NULL).
+
+SELECT p.nome, l.num_leito, i.data_entrada
+FROM internacao i
+JOIN paciente p ON i.cpf_paciente = p.cpf
+JOIN leito l ON i.id_leito = l.id_leito
+WHERE i.data_saida IS NULL;
+
+--Atendimentos por Médico
+--Quantos atendimentos cada médico realizou no último mês? 
+
+SELECT m.crm, m.nome, COUNT(a.id_atendimento) AS quantidade_atendimentos
+FROM medico m
+JOIN atendimento a ON m.crm = a.crm_medico
+GROUP BY m.crm, m.nome
+ORDER BY quantidade_atendimentos DESC;
+
+--Apresente o nome do médico e a quantidade.
+
+SELECT m.nome, COUNT(a.id_atendimento) AS quantidade_atendimentos
+FROM medico m
+JOIN atendimento a ON m.crm = a.crm_medico
+GROUP BY m.nome
+HAVING COUNT(a.id_atendimento) = (
+    SELECT MAX(qtd)
+    FROM (
+        SELECT COUNT(id_atendimento) AS qtd
+        FROM atendimento
+        GROUP BY crm_medico
+    ) sub
+);
+
+
+--Ocupação de Leitos por Ala
+--Qual a porcentagem de leitos ocupados em cada ala? Apresente o nome da ala e a
+--porcentagem.
+
+SELECT a.nome_tipo,
+       ROUND(
+           (COUNT(i.id_internacao) * 100.0) / COUNT(l.id_leito), 2) AS porcentagem_ocupacao
+FROM ala a
+JOIN leito l ON a.id_ala = l.id_ala
+LEFT JOIN internacao i 
+       ON l.id_leito = i.id_leito
+       AND i.data_saida IS NULL
+GROUP BY a.nome_tipo;
+
+--Faturamento por Plano de Saúde
+--Qual o valor total faturado para cada plano de saúde no ano de 2026? Apresente o nome
+--do plano e o valor total.
+
+
+SELECT ps.nome_plano,
+       SUM(f.valor) AS total_faturado
+FROM plano_saude ps
+JOIN paciente_plano pp ON ps.nome_plano = pp.nome_plano
+JOIN paciente p ON pp.cpf_paciente = p.cpf
+LEFT JOIN atendimento a ON a.cpf_paciente = p.cpf
+LEFT JOIN internacao i ON i.cpf_paciente = p.cpf
+LEFT JOIN exame e ON e.cpf_paciente = p.cpf
+JOIN faturamento f 
+     ON f.id_atendimento = a.id_atendimento
+     OR f.id_internacao = i.id_internacao
+     OR f.id_exame = e.id_exame
+WHERE EXTRACT(YEAR FROM f.data_emissao) = 2026
+GROUP BY ps.nome_plano;
+
+--Prescrições de Medicamentos
+--Quais são os dois medicamentos mais prescritos no hospital? Apresente o nome do
+--medicamento e a quantidade de prescrições.
+
+SELECT m.nome,
+       COUNT(p.id_medicamento) AS quantidade_prescricoes
+FROM medicamento m
+JOIN prescricao p ON m.id_medicamento = p.id_medicamento
+GROUP BY m.nome
+ORDER BY quantidade_prescricoes DESC
+LIMIT 2;
+
+--Médicos e Pacientes por Especialidade
+--Liste o nome do médico, a especialidade e a quantidade de pacientes atendidos por
+--cada médico.
+
+SELECT m.nome,
+       m.espec_medico,
+       COUNT(DISTINCT a.cpf_paciente) AS quantidade_pacientes
+FROM medico m
+JOIN atendimento a 
+     ON m.crm = a.crm_medico
+GROUP BY m.nome, m.espec_medico
+ORDER BY quantidade_pacientes DESC;
+
+--Leitos com Internações Prolongadas
+--Quais leitos estão ocupados há mais de 15 dias? Apresente o número do leito, o nome
+--do paciente e a data de entrada.
+
+SELECT l.num_leito,
+       p.nome AS paciente,
+       i.data_entrada
+FROM internacao i
+JOIN leito l 
+     ON i.id_leito = l.id_leito
+JOIN paciente p 
+     ON i.cpf_paciente = p.cpf
+WHERE i.data_saida IS NULL
+  AND CURRENT_DATE - i.data_entrada::date > 15;
+
+
+--Faturamento por Tipo de Atendimento
+--Qual o valor total faturado por tipo de atendimento (consulta, exame, internação)
+
+SELECT 
+    CASE 
+        WHEN f.id_atendimento IS NOT NULL THEN 'Consulta'
+        WHEN f.id_exame IS NOT NULL THEN 'Exame'
+        WHEN f.id_internacao IS NOT NULL THEN 'Internacao'
+    END AS tipo_atendimento,
+    SUM(f.valor) AS total_faturado
+FROM faturamento f
+GROUP BY tipo_atendimento;
+
+Faturamento por Plano de Saúde
+Qual o valor total faturado por por um determinado plano de saúde.
+
+SELECT ps.nome_plano,
+       SUM(f.valor) AS total_faturado
+FROM plano_saude ps
+JOIN paciente_plano pp ON ps.nome_plano = pp.nome_plano
+JOIN paciente p ON pp.cpf_paciente = p.cpf
+LEFT JOIN atendimento a ON a.cpf_paciente = p.cpf
+LEFT JOIN internacao i ON i.cpf_paciente = p.cpf
+LEFT JOIN exame e ON e.cpf_paciente = p.cpf
+JOIN faturamento f 
+     ON f.id_atendimento = a.id_atendimento
+     OR f.id_internacao = i.id_internacao
+     OR f.id_exame = e.id_exame
+WHERE ps.nome_plano = 'unimed'
+GROUP BY ps.nome_plano;
+
+
+
+
 
 
 
